@@ -1,8 +1,6 @@
 MODULE Tools
 
-!integer :: nk
-
-!nk = 15
+INTEGER, PARAMETER :: nk = 15
 
 type obs
   real :: x
@@ -25,7 +23,7 @@ subroutine rand_center(randobs, randcenters)
   type(center) :: randcenters(:)
   integer :: r, k
 
-  do k = 1, 15
+  do k = 1, nk
     r = MOD(IRAND(), 5000)
     randcenters(k) % x = randobs(r) % x
     randcenters(k) % y = randobs(r) % y
@@ -42,7 +40,7 @@ subroutine assign_a_cluster(myobs, centers)
 
   dist = 942327.0 * 942327.0 + 947322.0 * 947322.0
 
-  do i = 1, 15
+  do i = 1, nk
     dist_new = (myobs % x - centers(i) % x)**2 + &
                (myobs % y - centers(i) % y)**2
 
@@ -73,7 +71,7 @@ subroutine find_new_center(myobs, centers)
   integer :: k, nobs
   real :: x, y
 
-  do k = 1, 15
+  do k = 1, nk
     x = 0
     y = 0
     nobs = 0

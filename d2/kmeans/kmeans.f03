@@ -3,10 +3,11 @@ PROGRAM Kmeans
   IMPLICIT NONE
 
   INTEGER :: i, k, iter, niters
-  !INTEGER :: nk
+  !INTEGER, PARAMETER :: nk = 15
   REAL :: x, y
 
-  type(center) :: center_of_cl(15)
+
+  type(center) :: center_of_cl(nk)
   type(obs) ::  dat(5000)
 
   niters = 100
@@ -24,7 +25,7 @@ PROGRAM Kmeans
   call rand_center(dat, center_of_cl)
 
   OPEN(UNIT = 101, FILE = "rand_centers.txt")
-    do k = 1, 15
+    do k = 1, nk
       WRITE(101,*) center_of_cl(k)
     end do
 
@@ -51,7 +52,7 @@ PROGRAM Kmeans
 
 
   OPEN(UNIT=104, FILE="new_centers.txt")
-  do k = 1, 15
+  do k = 1, nk
     WRITE(104,*) center_of_cl(k)
   end do
 
