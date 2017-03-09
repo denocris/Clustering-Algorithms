@@ -8,8 +8,9 @@ PROGRAM Kmeans
 
   type(center) :: center_of_cl(15)
   type(obs) ::  dat(5000)
+  real :: obj(5)
 
-  niters = 100
+  niters = 5
   !nk = 15
 
   call SRAND(getpid())
