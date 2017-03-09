@@ -16,19 +16,24 @@ end type center
 
 CONTAINS
 
+subroutine rand_center(randobs, randcenters)
+  type(obs) :: randobs(:)
+  type(center) :: randcenters(:)
+  integer :: r, k
 
-type(center) function rand_center() result(ret)
-  !type (obs) :: ret
-  ret % x = rand() * (942327 - 32710) + 32710
-  ret % y = rand() * (947322 - 70003) + 70003
-  ret % cluster = 1
-  ret % num_obs = 0
-end function rand_center
+  do k = 1, 15
+    r = MOD(IRAND(), 5000)
+    randcenters(k) % x = randobs(r) % x
+    randcenters(k) % y = randobs(r) % y
+    randcenters(k) % cluster = k
+    randcenters(k) % num_obs = 0
+  end do
+end subroutine rand_center
 
 
 subroutine assign_a_cluster(myobs, centers)
   type(obs) :: myobs
-  type(center) :: centers(15)
+  type(center) :: centers(:)
   real :: dist
 
   dist = 942327.0 * 942327.0 + 947322.0 * 947322.0
@@ -46,15 +51,15 @@ subroutine assign_a_cluster(myobs, centers)
 end subroutine assign_a_cluster
 
 
-integer function obs_in_cluster(myobs, cen, k) result(ret)
-  integer :: k
-  type(obs) :: myobs
-  type(center) :: cen
-  ret = cen % num_obs
-  if (myobs % cluster == k) then
-    ret = ret + 1
-  end if
-end function obs_in_cluster
+! integer function obs_in_cluster(myobs, cen, k) result(ret)
+!   integer :: k
+!   type(obs) :: myobs
+!   type(center) :: cen
+!   ret = cen % num_obs
+!   if (myobs % cluster == k) then
+!     ret = ret + 1
+!   end if
+! end function obs_in_cluster
 
 
 
@@ -93,3 +98,11 @@ end subroutine find_new_center
 ! end function new_center
 
 END MODULE Tools
+
+
+! type(center) function rand_center() result(ret)
+!   ret % x = rand() * (942327 - 32710) + 32710
+!   ret % y = rand() * (947322 - 70003) + 70003
+!   ret % cluster = 1
+!   ret % num_obs = 0
+! end function rand_center
