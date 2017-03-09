@@ -2,13 +2,15 @@ PROGRAM Kmeans
   USE Tools
   IMPLICIT NONE
 
-  INTEGER :: i, k, iter, niters !, counter
+  INTEGER :: i, k, iter, niters
+  !INTEGER :: nk
   REAL :: x, y
 
   type(center) :: center_of_cl(15)
   type(obs) ::  dat(5000)
 
   niters = 100
+  !nk = 15
 
   call SRAND(getpid())
 

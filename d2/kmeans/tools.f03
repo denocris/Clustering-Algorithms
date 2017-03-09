@@ -1,5 +1,9 @@
 MODULE Tools
 
+!integer :: nk
+
+!nk = 15
+
 type obs
   real :: x
   real :: y
