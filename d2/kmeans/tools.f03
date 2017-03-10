@@ -1,5 +1,9 @@
 MODULE Tools
 
+
+INTEGER, PARAMETER :: nk = 15
+INTEGER, PARAMETER :: times = 5
+
 type obs
   real :: x
   real :: y
@@ -16,16 +20,13 @@ end type center
 
 CONTAINS
 
-!integer :: nk
-
-!nk = 15
 
 subroutine rand_center(randobs, randcenters)
   type(obs) :: randobs(:)
   type(center) :: randcenters(:)
   integer :: r, k
 
-  do k = 1, 15
+  do k = 1, nk
     r = MOD(IRAND(), 5000)
     randcenters(k) % x = randobs(r) % x
     randcenters(k) % y = randobs(r) % y
@@ -42,7 +43,7 @@ subroutine assign_a_cluster(myobs, centers)
 
   dist = 942327.0 * 942327.0 + 947322.0 * 947322.0
 
-  do i = 1, 15
+  do i = 1, nk
     dist_new = (myobs % x - centers(i) % x)**2 + &
                (myobs % y - centers(i) % y)**2
 
@@ -60,7 +61,7 @@ subroutine find_new_center(myobs, centers)
   integer :: k, nobs
   real :: x, y
 
-  do k = 1, 15
+  do k = 1, nk
     x = 0
     y = 0
     nobs = 0
@@ -77,21 +78,21 @@ subroutine find_new_center(myobs, centers)
   end do
 end subroutine find_new_center
 
-subroutine objective_func(myobs, centers, obj)
+real function comp_obj_func(myobs, centers) result(objf)
   type(obs) :: myobs(:)
   type(center) :: centers(:)
-  real :: obj(:)
+  !real :: obj(:)
 
-  obj = 0
-  do k = 1, 15
+  objf = 0
+  do k = 1, nk
     do i = 1, 5000
       if (myobs(i) % cluster == k) then
-        obj = obj + (myobs % x - centers(i) % x)**2 + &
-              (myobs % y - centers(i) % y)**2
+        objf = objf + SQRT((myobs(i) % x - centers(k) % x)**2 + &
+              (myobs(i) % y - centers(k) % y)**2)
         end if
       end do
     end do
 
-end subroutine objective_func
+end function comp_obj_func
 
 END MODULE Tools
