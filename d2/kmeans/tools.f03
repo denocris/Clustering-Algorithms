@@ -1,8 +1,8 @@
 MODULE Tools
 
 
-INTEGER, PARAMETER :: nk = 15
-INTEGER, PARAMETER :: times = 5
+INTEGER, PARAMETER :: nk = 10
+INTEGER, PARAMETER :: times = 100
 
 type obs
   real :: x
@@ -19,6 +19,63 @@ end type center
 
 
 CONTAINS
+
+  subroutine kmeans_pp(myobs, randcenters)
+    type(obs), dimension(5000) :: myobs
+    type(center) :: randcenters(:)
+    real, dimension(5000,17) :: dist2
+    real, dimension(5000,17) :: prob
+    integer :: k, r, ri, counter
+    real :: rp
+    logical :: res
+
+    dist2 = 1000000000
+
+! ---------------- Initialize Center 1 -------------
+
+    r = MOD(IRAND(), 5000)
+    randcenters(1) % x = myobs(r) % x
+    randcenters(1) % y = myobs(r) % y
+    randcenters(1) % cluster = 1
+    randcenters(1) % num_obs = 0
+
+! --------------------------------------------------
+
+    do k = 1, nk - 1
+
+      do i = 1, 5000
+        dist2(i, k) = ABS(myobs(i) % x - randcenters(k) % x)**1 + &
+                      ABS(myobs(i) % y - randcenters(k) % y)**1
+      end do
+
+      tot_dist2 = SUM(dist2(:, k))
+
+      do i = 1, 5000
+        if (k == 1) then
+          prob(i, k) = dist2(i, k)/tot_dist2
+        else
+          prob(i, k) = MINVAL(dist2(i, : k )/tot_dist2)
+        end if
+      end do
+      !print*, "Max prob for", k, "is:", MAXVAL(prob(:, k)*100)
+
+      res = .TRUE.
+      counter = 0
+      do while(res .eqv. .TRUE.)
+        rp = RAND()
+        ri = MOD(IRAND(), 5000)
+        counter = counter + 1
+        if (prob(ri, k)*100 > rp) then
+          randcenters(k + 1) % x = myobs(ri) % x
+          randcenters(k + 1) % y = myobs(ri) % y
+          randcenters(k + 1) % cluster = k + 1
+          randcenters(k + 1) % num_obs = 0
+          res = .FALSE.
+        end if
+      end do
+      !print*, "The", k + 1, "center is assign after", counter, " iterations!"
+    end do
+  end subroutine kmeans_pp
 
 
 subroutine rand_center(randobs, randcenters)
