@@ -3,12 +3,21 @@ FFLAGS = -Wall
 
 .SUFFIXES:
 
-all: 01
 
-01: kmeans.x
+
+all: kmeans
+
+
+kmeans: kmeans.x
 	./kmeans.x < s3.dat
 
+kmeanspp: kmeanspp.x
+	./kmeanspp.x < s3.dat
+
 kmeans.x: tools.o kmeans.o
+	$(FC) $^ -o $@
+
+kmeanspp.x: tools.o kmeanspp.o
 	$(FC) $^ -o $@
 
 
@@ -20,6 +29,6 @@ kmeans.x: tools.o kmeans.o
 
 
 clean:
-	rm -f *.o *~ *.x *.out *.txt
+	rm -f *.o *~ *.x *.out *.bak
 
 .PHONY: clean

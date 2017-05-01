@@ -92,7 +92,7 @@ end do
   obj_min = MINVAL(obj)
   obj_mean = SUM(obj)/times
 
-  OPEN(UNIT=106, FILE="data_10.txt")
+  OPEN(UNIT=106,FILE="data_cluster.txt",action='write',position='append')
   !do i = 2, 20
   WRITE(106,*) nk, obj_min, obj_mean
   !end do
