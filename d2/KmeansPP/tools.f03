@@ -1,7 +1,7 @@
 MODULE Tools
 
 
-INTEGER, PARAMETER :: nk = 20
+INTEGER, PARAMETER :: nk = 2
 INTEGER, PARAMETER :: times = 100
 
 type obs

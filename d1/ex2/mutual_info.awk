@@ -35,7 +35,7 @@ if ($i=="?") {num_qm = num_qm + 1}
 len_without_qm = len - num_qm
 }
 END {
-  
+
 #print len_without_qm
 
 print ((rep_and_yes/len)*log((rep_and_yes/len)/((num_of_rep/len)*(num_yes/len))) + \

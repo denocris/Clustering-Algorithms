@@ -1,9 +1,10 @@
-PROGRAM Kmeans
+PROGRAM FuzzyKmeanspp
   USE Tools
   IMPLICIT NONE
 
   INTEGER :: i, k, time, num_conv
   REAL :: x, y, old_c, new_c, convergence
+  !integer :: STATUS = 0
 
 
   type(center) :: center_of_cl(nk)
@@ -16,23 +17,23 @@ PROGRAM Kmeans
     READ(5,*) x, y
     dat(i) % x = x
     dat(i) % y = y
-    dat(i) % cluster = - 1
+    dat(i) % cluster_array =  0.0
+    !dat(i) % nearest_cluster = -1
   end do
 
 
 !do num_clusters = 2, 20
 !------------------  ---------------------
-
 do time = 1, times
 
   call SRAND(getpid() + time)
-  !call kmeans_pp(dat, center_of_cl)
-  call rand_center(dat, center_of_cl)
+  call kmeans_pp(dat, center_of_cl)
+  !call rand_center(dat, center_of_cl)
 
 
   !------------------ Print on File ---------------------
 
-if (time == times/2) then
+if (time == times) then
   OPEN(UNIT = 101, FILE = "data/rand_centers.txt")
     do k = 1, nk
       WRITE(101,*) center_of_cl(k)
@@ -44,28 +45,51 @@ if (time == times/2) then
     end do
 end if
 
+!------------------ Fuzzy Check ---------------------
+
+! do i = 1, nk
+! print*, "------", dat(10) % cluster_array(i)
+! end do
+! call  fuzzy_assignation_of_cluster(dat(10), center_of_cl)
+! do i = 1, nk
+! print*, "......", dat(10) % cluster_array(i)
+! end do
+!
+! CALL EXIT(STATUS)
+
 !------------------ Convergence ---------------------
 
   convergence = 1
   num_conv = 0
+
   do while(convergence .ge. 0.001)
     do i = 1, 5000
-      call  assign_a_cluster(dat(i), center_of_cl)
+      call  fuzzy_assignation_of_cluster(dat(i), center_of_cl)
     end do
 
-    old_c = MAXVAL(center_of_cl % x)
-    call find_new_center(dat,center_of_cl)
-    new_c = MAXVAL(center_of_cl % x)
 
-    convergence = ABS(new_c - old_c)
+    old_c = center_of_cl(1) % x
+    call find_new_center(dat,center_of_cl)
+    new_c = center_of_cl(1) % x
+
+
+    convergence = ABS((new_c - old_c)/old_c)
+
+
     num_conv = num_conv + 1
+
   end do
+
+
+
+
+
 
 !------------------- Some Data to Store -----------------------
 
   procid(time) = getpid() + time
   nconv(time) = num_conv
-  obj(time) = comp_obj_func(dat, center_of_cl)
+  obj(time) = fuzzy_comp_obj_func(dat, center_of_cl)
 
 
   if (nk == 15) then
@@ -85,7 +109,7 @@ end if
       WRITE(105,*) center_of_cl(k)
     end do
   end if
-  end if
+end if
 
 
 end do
@@ -93,10 +117,10 @@ end do
   obj_min = MINVAL(obj)
   obj_mean = SUM(obj)/times
 
-  OPEN(UNIT=106, FILE="data/data_kmeans.txt", action='write',position='append')
+  OPEN(UNIT=106,FILE="data/data_fuzzykmeans.txt",action='write',position='append')
   !do i = 2, 20
   WRITE(106,*) nk, obj_min, obj_mean
   !end do
 
 
-END PROGRAM Kmeans
+END PROGRAM FuzzyKmeanspp

@@ -33,12 +33,12 @@ do time = 1, times
   !------------------ Print on File ---------------------
 
 if (time == times) then
-  OPEN(UNIT = 101, FILE = "rand_centers.txt")
+  OPEN(UNIT = 101, FILE = "data/rand_centers.txt")
     do k = 1, nk
       WRITE(101,*) center_of_cl(k)
     end do
 
-  OPEN(UNIT = 102, FILE = "initial_observations.txt")
+  OPEN(UNIT = 102, FILE = "data/initial_observations.txt")
     do i = 1, 5000
       WRITE(102,*) dat(i)
     end do
@@ -69,22 +69,22 @@ end if
 
 
   if (nk == 15) then
-    OPEN(UNIT=103, FILE="info_nk_15.txt")
+    OPEN(UNIT=103, FILE="data/info_nk_15.txt")
     do i = 1, times
       WRITE(103,*) i, procid(i), nconv(i), obj(i)
     end do
-  end if
 
   if (time == times/2) then
-    OPEN(UNIT=104, FILE="final_observations.txt")
+    OPEN(UNIT=104, FILE="data/final_observations.txt")
     do i = 1, 5000
       WRITE(104,*) dat(i)
     end do
 
-    OPEN(UNIT=105, FILE="new_centers.txt")
+    OPEN(UNIT=105, FILE="data/new_centers.txt")
     do k = 1, nk
       WRITE(105,*) center_of_cl(k)
     end do
+  end if
   end if
 
 end do
@@ -92,7 +92,7 @@ end do
   obj_min = MINVAL(obj)
   obj_mean = SUM(obj)/times
 
-  OPEN(UNIT=106,FILE="data_cluster.txt",action='write',position='append')
+  OPEN(UNIT=106,FILE="data/data_kmeanspp.txt",action='write',position='append')
   !do i = 2, 20
   WRITE(106,*) nk, obj_min, obj_mean
   !end do

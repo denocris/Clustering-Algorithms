@@ -5,7 +5,7 @@ FFLAGS = -Wall
 
 
 
-all: kmeans
+all: kmeanspp
 
 
 kmeans: kmeans.x
